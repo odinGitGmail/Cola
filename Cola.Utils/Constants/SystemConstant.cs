@@ -91,6 +91,13 @@ public class SystemConstant
 
     #endregion
 
+    #region swagger配置
+
+    public const string CONSTANT_COLASWAGGER_SECTION = "ColaSwagger";
+    public const string CONSTANT_COLASWAGGER_VERSIONTITLE_SECTION = "VersionTitle";
+
+    #endregion
+
     #endregion
 
     #endregion
