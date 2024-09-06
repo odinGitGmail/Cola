@@ -1,6 +1,11 @@
 namespace Cola.Swagger;
 
-public class ActionNameAttribute(string name) : Attribute
+public class ActionNameAttribute : Attribute
 {
-    public string Name { get; set; } = name;
+    public string Name { get; set; }
+
+    public ActionNameAttribute(string name)
+    {
+        Name = name;
+    }
 }

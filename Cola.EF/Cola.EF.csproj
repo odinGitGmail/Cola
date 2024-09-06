@@ -21,7 +21,6 @@
     <ItemGroup>
       <ProjectReference Include="..\Cola.Cache\Cola.Cache.csproj" />
       <ProjectReference Include="..\Cola.Exception\Cola.Exception.csproj" />
-      <ProjectReference Include="..\Cola.Log\Cola.Log.csproj" />
       <ProjectReference Include="..\Cola.Models.Core\Cola.Models.Core.csproj" />
       <ProjectReference Include="..\Cola.Utils\Cola.Utils.csproj" />
     </ItemGroup>
