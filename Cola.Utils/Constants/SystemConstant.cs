@@ -91,12 +91,23 @@ public class SystemConstant
 
     #endregion
 
+    #endregion
+    
     #region swagger配置
 
     public const string CONSTANT_COLASWAGGER_SECTION = "ColaSwagger";
     public const string CONSTANT_COLASWAGGER_VERSIONTITLE_SECTION = "VersionTitle";
 
     #endregion
+
+    #region Jwt
+
+    public const string CONSTANT_COLAAUTH_SECTION = "ColaAuth";
+    public const string CONSTANT_COLAAUTH_AUTHTYPE_SECTION = $"{CONSTANT_COLAAUTH_SECTION}:AuthType";
+    public const string CONSTANT_COLAAUTH_SECRET_SECTION = $"{CONSTANT_COLAAUTH_SECTION}:Secret";
+    public const string CONSTANT_COLAAUTH_Jwt_SECTION = $"{CONSTANT_COLAAUTH_SECTION}:Jwt";
+    public const string CONSTANT_COLAAUTH_Jwt_VALIDISSUER_SECTION = $"{CONSTANT_COLAAUTH_Jwt_SECTION}:ValidIssuer";
+    public const string CONSTANT_COLAAUTH_Jwt_AVALIDAUDIENCE_SECTION = $"{CONSTANT_COLAAUTH_Jwt_SECTION}:ValidAudience";
 
     #endregion
 

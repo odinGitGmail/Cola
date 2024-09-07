@@ -1,6 +1,8 @@
 ﻿using System;
+using Cola.Models.Core.Models.ColaAuthen;
 using Cola.Utils;
 using Cola.Utils.Enums;
+using NetTaste;
 
 namespace Cola.Models.Core.Models;
 
@@ -27,11 +29,11 @@ public class ApiResult<T>
     /// </summary>
     public string ErrorCode { get; set; } = "0";
     /// <summary>
-    /// Error.
-    /// </summary>
-    public Exception? Error { get; set; } = null;
-    /// <summary>
     /// api request path.
     /// </summary>
     public string? RequestPath { get; set; }
+    /// <summary>
+    /// Token
+    /// </summary>
+    public TokenModel? Token { get; set; }
 }

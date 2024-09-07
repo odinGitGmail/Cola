@@ -9,9 +9,11 @@
     <ItemGroup>
       <PackageReference Include="Microsoft.AspNetCore.Mvc.Versioning" Version="5.1.0" />
       <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
+      <PackageReference Include="Swashbuckle.AspNetCore.Filters" Version="8.0.2" />
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\Cola.Models.Core\Cola.Models.Core.csproj" />
       <ProjectReference Include="..\Cola.Utils\Cola.Utils.csproj" />
     </ItemGroup>
 

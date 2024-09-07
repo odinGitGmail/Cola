@@ -40,7 +40,6 @@ public class ExceptionMiddleware(
         else
             apiResult.Message = "抱歉，出错了";
 
-        apiResult.Error = e;
         apiResult.RequestPath = context.Request.Path.Value;
         await context.Response.WriteAsync(JsonConvert.SerializeObject(apiResult));
     }

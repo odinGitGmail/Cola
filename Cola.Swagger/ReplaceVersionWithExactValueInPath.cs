@@ -31,8 +31,7 @@ public class ReplaceVersionWithExactValueInPath : IDocumentFilter
                                          x.IsPublic &&
                                          x.GetCustomAttribute<ApiVersionAttribute>() != null)
                     .GetCustomAttribute<ApiVersionAttribute>()?.Versions
-                    .FirstOrDefault()
-                    .ToString();
+                    .FirstOrDefault();
                 var settedAction = methods
                     .FirstOrDefault(x => x.Name == action &&
                                          x.IsPublic &&

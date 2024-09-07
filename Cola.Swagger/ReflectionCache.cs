@@ -13,10 +13,10 @@ public class ReflectionCache
     {
         AllControllers = Assembly.GetEntryAssembly()
             .GetTypes()
-            .Where(x => typeof(ControllerBase).IsAssignableFrom(x));
+            .Where(t => typeof(ControllerBase).IsAssignableFrom(t));
         AllApiVersions = this.AllControllers.SelectMany(x => x.GetMethods()
-                .Where(x => x.IsPublic && x.GetCustomAttribute<ApiVersionAttribute>() != null)
-                .SelectMany(x => x.GetCustomAttribute<ApiVersionAttribute>().Versions))
+                .Where(methodInfo => methodInfo.IsPublic && methodInfo.GetCustomAttribute<ApiVersionAttribute>() != null)
+                .SelectMany(methodInfo => methodInfo.GetCustomAttribute<ApiVersionAttribute>().Versions))
             .GroupBy(x => x.ToString())
             .Select(x => x.Key);
     }
