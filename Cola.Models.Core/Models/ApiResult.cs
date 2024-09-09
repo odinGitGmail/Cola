@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Text;
 using Cola.Models.Core.Models.ColaAuthen;
 using Cola.Utils;
 using Cola.Utils.Enums;
+using Microsoft.AspNetCore.Mvc;
 using NetTaste;
 
 namespace Cola.Models.Core.Models;
@@ -13,9 +15,10 @@ namespace Cola.Models.Core.Models;
 public class ApiResult<T>
 {
     /// <summary>
-    /// data.
+    /// data
     /// </summary>
     public T? Data { get; set; }
+    
     /// <summary>
     /// success is true,otherwise false.
     /// </summary>

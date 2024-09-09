@@ -108,7 +108,7 @@ public class SystemConstant
     public const string CONSTANT_COLAAUTH_Jwt_SECTION = $"{CONSTANT_COLAAUTH_SECTION}:Jwt";
     public const string CONSTANT_COLAAUTH_Jwt_VALIDISSUER_SECTION = $"{CONSTANT_COLAAUTH_Jwt_SECTION}:ValidIssuer";
     public const string CONSTANT_COLAAUTH_Jwt_AVALIDAUDIENCE_SECTION = $"{CONSTANT_COLAAUTH_Jwt_SECTION}:ValidAudience";
-
+    public const string CONSTANT_COLAAUTH_Jwt_EXPIRATION_SECTION = $"{CONSTANT_COLAAUTH_Jwt_SECTION}:Expiration";
     #endregion
 
     #endregion
