@@ -3,7 +3,6 @@ using System.Text;
 using Cola.Models.Core.Models.ColaAuthen;
 using Cola.Utils;
 using Cola.Utils.Enums;
-using Microsoft.AspNetCore.Mvc;
 using NetTaste;
 
 namespace Cola.Models.Core.Models;
