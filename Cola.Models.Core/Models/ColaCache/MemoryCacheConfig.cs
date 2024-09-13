@@ -41,7 +41,7 @@ public class MemoryCacheConfig
                     memoryCacheTypeEnum = (EnumCacheType)Enum.Parse(typeof(EnumCacheType), "relative");
                     break;
                 default:
-                    throw new ColaException(EnumException.ParamCanNotConvertEnum, value);
+                    throw new ColaException(EnumException.SyS000002, value);
             }
         }
     }

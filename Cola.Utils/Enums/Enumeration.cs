@@ -7,15 +7,18 @@ namespace Cola.Utils.Enums;
 /// </summary>
 /// <param name="id"></param>
 /// <param name="description"></param>
-public abstract class Enumeration(int id, string description) : IComparable
+public abstract class Enumeration<T>(T id, string description) : IComparable
 {
     private string Description { get; set; } = description;
 
-    private int Id { get; set; } = id;
+    /// <summary>
+    /// Id
+    /// </summary>
+    public T Id { get; set; } = id;
 
     public override string ToString() => Description;
 
-    public static IEnumerable<T> GetAll<T>() where T : Enumeration =>
+    public static IEnumerable<T> GetAll<T>() where T : Enumeration<T> =>
         typeof(T).GetFields(BindingFlags.Public |
                             BindingFlags.Static |
                             BindingFlags.DeclaredOnly)
@@ -24,7 +27,7 @@ public abstract class Enumeration(int id, string description) : IComparable
 
     public override bool Equals(object obj)
     {
-        if (obj is not Enumeration otherValue)
+        if (obj is not Enumeration<T> otherValue)
         {
             return false;
         }
@@ -35,5 +38,5 @@ public abstract class Enumeration(int id, string description) : IComparable
         return typeMatches && valueMatches;
     }
 
-    public int CompareTo(object other) => Id.CompareTo(((Enumeration)other).Id);
+    public int CompareTo(object other) => Id.ToString().CompareTo(((Enumeration<T>)other).Id);
 }

@@ -3,7 +3,9 @@ using System.Security.Claims;
 using System.Text;
 using Cola.Models.Core.Enums.Jwt;
 using Cola.Models.Core.Models;
+using Cola.Models.Core.Models.ColaApiResult;
 using Cola.Utils.Constants;
+using Cola.Utils.Enums;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
@@ -59,15 +61,22 @@ public static class InjectColaJwt
                             //终止默认的返回结果
                             context.HandleResponse();
                             string token = context.Request.Headers["Authorization"];
-                            var result = JsonConvert.SerializeObject(new ApiResult<string>()
-                                {Success = false, ErrorCode = "401", Message = "登录过期", RequestPath = context.Request.Path});
+                            var result = JsonConvert.SerializeObject(new ApiResultError()
+                                {
+                                    Code = EnumException.Tok000002.Id, 
+                                    Message = EnumException.Tok000002.ToString(),
+                                    StatusCode = EnumResponseStatusCode.Unauthorized.Id,
+                                });
                             if (string.IsNullOrEmpty(token))
                             {
-                                result = JsonConvert.SerializeObject(new ApiResult<string>()
-                                    {Success = false, ErrorCode = "401", Message = "token不能为空", RequestPath = context.Request.Path });
+                                result = JsonConvert.SerializeObject(new ApiResultError()
+                                {
+                                    Code = EnumException.Tok000001.Id, 
+                                    Message = EnumException.Tok000001.ToString(),
+                                    StatusCode = EnumResponseStatusCode.Unauthorized.Id,
+                                });
                                 context.Response.ContentType = "application/json";
-                                //验证失败返回401
-                                context.Response.StatusCode = StatusCodes.Status200OK;
+                                context.Response.StatusCode = EnumResponseStatusCode.InternalServerError.Id;
                                 context.Response.WriteAsync(result);
                                 return Task.FromResult(result);
                             }
@@ -80,28 +89,34 @@ public static class InjectColaJwt
                             }
                             catch (SecurityTokenExpiredException)
                             {
-                                result = JsonConvert.SerializeObject(new ApiResult<string>()
-                                    { Success = false, ErrorCode = "401", Message = "登录已过期", RequestPath = context.Request.Path });
+                                result = JsonConvert.SerializeObject(new ApiResultError()
+                                {
+                                    Code = EnumException.Tok000002.Id, 
+                                    Message = EnumException.Tok000002.ToString(),
+                                    StatusCode = EnumResponseStatusCode.Unauthorized.Id,
+                                });
                                 context.Response.ContentType = "application/json";
-                                //验证失败返回401
-                                context.Response.StatusCode = StatusCodes.Status200OK;
+                                context.Response.StatusCode = EnumResponseStatusCode.InternalServerError.Id;
                                 context.Response.WriteAsync(result);
                                 return Task.FromResult(result);
                             }
                             catch (Exception ex)
                             {
                                 Console.WriteLine(ex);
-                                result = JsonConvert.SerializeObject(new ApiResult<string>()
-                                    { Success = false, ErrorCode = "401", Message = "token令牌无效", RequestPath = context.Request.Path });
+                                result = JsonConvert.SerializeObject(new ApiResultError()
+                                {
+                                    Code = EnumException.Tok000003.Id, 
+                                    Message = EnumException.Tok000003.ToString(),
+                                    StatusCode = EnumResponseStatusCode.Unauthorized.Id,
+                                });
                                 //验证失败返回401
-                                context.Response.StatusCode = StatusCodes.Status200OK;
+                                context.Response.StatusCode = EnumResponseStatusCode.InternalServerError.Id;
                                 context.Response.WriteAsync(result);
                                 return Task.FromResult(result);
                             }
 
                             context.Response.ContentType = "application/json";
-                            //验证失败返回401
-                            context.Response.StatusCode = StatusCodes.Status200OK;
+                            context.Response.StatusCode = EnumResponseStatusCode.InternalServerError.Id;
                             context.Response.WriteAsync(result);
                             return Task.FromResult(result);
                         }

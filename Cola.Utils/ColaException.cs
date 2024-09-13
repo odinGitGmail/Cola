@@ -5,12 +5,11 @@ namespace Cola.Utils;
 
 public class ColaException : Exception
 {
-    public ColaException(EnumException enumException) : base(enumException.GetDescription())
+    public ColaException(EnumException enumException) : base(enumException.ToString())
     {
     }
 
-    public ColaException(EnumException enumException, string msg) : base(string.Format(enumException.GetDescription(),
-        msg))
+    public ColaException(EnumException enumException, string msg) : base(string.Format(enumException.ToString(), msg))
     {
     }
 

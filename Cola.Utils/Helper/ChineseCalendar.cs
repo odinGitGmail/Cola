@@ -401,7 +401,7 @@ public class ChineseCalendar
 
             //检查日期是否大于最大天
             if (cd > GetChineseMonthDays(cy, cm))
-                throw new ColaException(EnumException.ParamValidationFailed);
+                throw new ColaException(EnumException.SyS000003);
             offset = offset + cd; //加上当月的天数
 
             #endregion
@@ -422,7 +422,7 @@ public class ChineseCalendar
                 offset = offset + temp; //加上闰月天数
 
                 if (cd > GetChineseMonthDays(cy, cm))
-                    throw new ColaException(EnumException.ParamValidationFailed);
+                    throw new ColaException(EnumException.SyS000003);
                 offset = offset + cd;
             }
             else //计算月等于闰月
@@ -435,7 +435,7 @@ public class ChineseCalendar
                 }
 
                 if (cd > GetChineseLeapMonthDays(cy))
-                    throw new ColaException(EnumException.ParamValidationFailed);
+                    throw new ColaException(EnumException.SyS000003);
                 offset = offset + cd;
             }
 
@@ -561,7 +561,7 @@ public class ChineseCalendar
     private void CheckDateLimit(DateTime dt)
     {
         if (dt < MinDay || dt > MaxDay)
-            throw new ColaException(EnumException.ParamOutOfRang);
+            throw new ColaException(EnumException.SyS000005);
     }
 
     #endregion
@@ -578,14 +578,14 @@ public class ChineseCalendar
     private void CheckChineseDateLimit(int year, int month, int day, bool leapMonth)
     {
         if (year < MinYear || year > MaxYear)
-            throw new ColaException(EnumException.ParamValidationFailed);
+            throw new ColaException(EnumException.SyS000003);
         if (month < 1 || month > 12)
-            throw new ColaException(EnumException.ParamValidationFailed);
+            throw new ColaException(EnumException.SyS000003);
         if (day < 1 || day > 30) //中国的月最多30天
-            throw new ColaException(EnumException.ParamValidationFailed);
+            throw new ColaException(EnumException.SyS000003);
         var leap = GetChineseLeapMonth(year); // 计算该年应该闰哪个月
         if (leapMonth && month != leap)
-            throw new ColaException(EnumException.ParamValidationFailed);
+            throw new ColaException(EnumException.SyS000003);
     }
 
     #endregion

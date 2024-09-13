@@ -73,7 +73,7 @@ public class ParamsSignHelper
         foreach (var pair in _mValues)
         {
             if (pair.Value == null)
-                throw new ColaException(EnumException.ParamNotNull);
+                throw new ColaException(EnumException.SyS000001);
             if (pair.Key != "sign" && pair.Value.ToString() != "") buff += pair.Key + "=" + pair.Value + "&";
         }
 
@@ -94,7 +94,7 @@ public class ParamsSignHelper
         foreach (var urlParam in urlParams.Split('&'))
         {
             if (urlParam.Split('=').Length == 1)
-                throw new ColaException(EnumException.ParamNotNull);
+                throw new ColaException(EnumException.SyS000001);
             var key = urlParam.Split('=')[0];
             var value = urlParam.Split('=')[1];
             if (key != "sign")
@@ -123,7 +123,7 @@ public class ParamsSignHelper
         foreach (var urlParam in urlParams.Split('&'))
         {
             if (urlParam.Split('=').Length == 1)
-                throw new ColaException(EnumException.ParamNotNull);
+                throw new ColaException(EnumException.SyS000001);
             var key = urlParam.Split('=')[0];
             var value = urlParam.Split('=')[1];
             if (key != "sign")
@@ -148,7 +148,7 @@ public class ParamsSignHelper
     {
         var url = string.Empty;
         if (jobj.Properties().Count() == 1)
-            throw new ColaException(EnumException.ParamNotNull);
+            throw new ColaException(EnumException.SyS000001);
         _mValues.Clear();
         string? oldSign = null;
         foreach (var item in jobj.Properties())

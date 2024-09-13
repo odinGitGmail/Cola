@@ -386,7 +386,7 @@ public static class StringExtensions
             return jobj;
         }
 
-        throw new ColaException(EnumException.RegexEmail);
+        throw new ColaException(EnumException.Reg000001);
     }
 
     /// <summary>
@@ -450,7 +450,7 @@ public static class StringExtensions
             return jobj;
         }
 
-        throw new ColaException(EnumException.RegexIdCardNumber);
+        throw new ColaException(EnumException.Reg000002);
     }
 
     /// <summary>
@@ -477,7 +477,7 @@ public static class StringExtensions
             return jobj;
         }
 
-        throw new ColaException(EnumException.RegexPhoneNumber);
+        throw new ColaException(EnumException.Reg000003);
     }
 
     /// <summary>

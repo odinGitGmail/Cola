@@ -23,7 +23,7 @@ public class RandomHelper
     public static int GetRandomByWeight(List<int> lstWeight)
     {
         if (lstWeight == null)
-            throw new ColaException(EnumException.ParamNotNull);
+            throw new ColaException(EnumException.SyS000001);
         if (lstWeight.Count == 0)
             return 0;
         var length = lstWeight.Count;
@@ -52,9 +52,9 @@ public class RandomHelper
     public static IEnumerable<KeyValuePair<T, int>> GetRandomListByWeight<T>(List<KeyValuePair<T, int>> list, int count)
     {
         if (list == null)
-            throw new ColaException(EnumException.ParamNotNull);
+            throw new ColaException(EnumException.SyS000001);
         if (count <= 0)
-            throw new ColaException(EnumException.ParamNotLteZero);
+            throw new ColaException(EnumException.SyS000006);
         if (list.Count <= count) return list;
         //计算权重总和
         var totalWeights = list.Sum(ls => ls.Value);

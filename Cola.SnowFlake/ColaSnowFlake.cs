@@ -48,9 +48,9 @@ public class ColaSnowFlake : IColaSnowFlake
     {
         _twepoch = (long)(new DateTime(2020, 1, 1, 0, 0, 0, DateTimeKind.Utc) - Jan1St1970).TotalMilliseconds;
         if (model.DatacenterId > MaxDatacenterId || model.DatacenterId < 0)
-            throw new ColaException(EnumException.SnowFlakeDatacenterIdLengthGtOrLt, MaxDatacenterId.ToString());
+            throw new ColaException(EnumException.Snf000001, MaxDatacenterId.ToString());
         if (model.WorkerId > MaxWorkerId || model.WorkerId < 0)
-            throw new ColaException(EnumException.SnowFlakeWorkerIdLengthGtOrLt, MaxWorkerId.ToString());
+            throw new ColaException(EnumException.Snf000002, MaxWorkerId.ToString());
         LogWorkerId = model.WorkerId;
         LogDatacenterId = model.DatacenterId;
         LogSequence = 0L;
@@ -68,9 +68,9 @@ public class ColaSnowFlake : IColaSnowFlake
     {
         _twepoch = (long)(new DateTime(2020, 1, 1, 0, 0, 0, DateTimeKind.Utc) - Jan1St1970).TotalMilliseconds;
         if (datacenterId > MaxDatacenterId || datacenterId < 0)
-            throw new ColaException(EnumException.SnowFlakeDatacenterIdLengthGtOrLt, MaxDatacenterId.ToString());
+            throw new ColaException(EnumException.Snf000001, MaxDatacenterId.ToString());
         if (workerId > MaxWorkerId || workerId < 0)
-            throw new ColaException(EnumException.SnowFlakeWorkerIdLengthGtOrLt, MaxWorkerId.ToString());
+            throw new ColaException(EnumException.Snf000002, MaxWorkerId.ToString());
 
         LogWorkerId = workerId;
         LogDatacenterId = datacenterId;
