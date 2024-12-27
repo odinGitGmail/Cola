@@ -5,6 +5,7 @@ using Cola.Utils.Enums;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.AspNetCore.Mvc.Filters;
+using Newtonsoft.Json;
 
 namespace Cola.FilterExtensions;
 
@@ -20,19 +21,16 @@ public class ColaActionFilter(IColaLog colaLog) : IActionFilter
     /// <param name="context"></param>
     public void OnActionExecuting(ActionExecutingContext context)
     {
-        if (colaLog != null)
+        // 记录请求参数日志
+        ControllerActionDescriptor desc = context.ActionDescriptor as ControllerActionDescriptor;
+        if (desc != null)
         {
-            // 记录请求参数日志
-            ControllerActionDescriptor desc = context.ActionDescriptor as ControllerActionDescriptor;
-            if (desc != null)
-            {
-                var logText = CreateRequestLogText(
-                    context.HttpContext.Request.Method,
-                    desc.ControllerName,
-                    desc.ActionName,
-                    context.ActionArguments);
-                colaLog.Info(logText);
-            }
+            var logText = CreateRequestLogText(
+                context.HttpContext.Request.Method,
+                desc.ControllerName,
+                desc.ActionName,
+                context.ActionArguments);
+            colaLog.Info(logText);
         }
     }
 
@@ -42,36 +40,49 @@ public class ColaActionFilter(IColaLog colaLog) : IActionFilter
     /// <param name="context"></param>
     public void OnActionExecuted(ActionExecutedContext context)
     {
-        ObjectResult rst = context.Result as ObjectResult;
-        object? rstValue = rst != null ? rst.Value : null;
-        if (rstValue.GetType().Name != typeof(ApiResult<>).Name)
+        if (context.Exception != null)
         {
-            if (context.Exception != null)
+            // 记录请求结果日志
+            if (context.ActionDescriptor is ControllerActionDescriptor desc)
             {
-                // 异常处理
-                context.ExceptionHandled = true;
-                // 如果是用户异常
-                context.HttpContext.Response.StatusCode = EnumResponseStatusCode.InternalServerError.Id;
-                context.Result = new ObjectResult(new ApiResultError { Message = context.Exception.Message });
-            }
-            else
-            {
-                // 无异常
-                context.Result = new ObjectResult(new ApiResult<object?> { Data = rstValue, });
+                colaLog.Error(context.Exception);
             }
         }
+        else
+        {
+            ObjectResult rst = context.Result as ObjectResult;
+            object? rstValue = rst != null ? rst.Value : null;
+            if (rstValue.GetType().Name != typeof(ApiResult<>).Name)
+            {
+                if (context.Exception != null)
+                {
+                    // 异常处理
+                    context.ExceptionHandled = true;
+                    // 如果是用户异常
+                    context.HttpContext.Response.StatusCode = EnumResponseStatusCode.InternalServerError.Id;
+                    context.Result = new ObjectResult(new ApiResultError { Message = context.Exception.Message });
+                }
+                else
+                {
+                    // 无异常
+                    context.Result = new ObjectResult(new ApiResult<object?> { Data = rstValue, });
+                }
+            }
+            // 记录请求结果日志
+            ControllerActionDescriptor desc = context.ActionDescriptor as ControllerActionDescriptor;
+            if (desc != null)
+            {
+                var logText = CreateResponseLogText(
+                    context.HttpContext.Request.Method,
+                    desc.ControllerName,
+                    desc.ActionName,
+                    rstValue);
+                colaLog.Info(logText);
+            }
+        }
+        
 
-        // 记录请求结果日志
-        ControllerActionDescriptor desc = context.ActionDescriptor as ControllerActionDescriptor;
-        if (desc != null)
-        {
-            var logText = CreateResponseLogText(
-                context.HttpContext.Request.Method,
-                desc.ControllerName,
-                desc.ActionName,
-                rstValue);
-            colaLog.Info(logText);
-        }
+        
     }
     
     /// <summary>
@@ -90,7 +101,7 @@ public class ColaActionFilter(IColaLog colaLog) : IActionFilter
         {
             foreach (var p in actionArgs)
             {
-                sb.AppendLine($"    " + p.Key + "：" + Newtonsoft.Json.JsonConvert.SerializeObject(p.Value));
+                sb.AppendLine($"    " + p.Key + "：" + JsonConvert.SerializeObject(p.Value));
             }
         }
         else
@@ -114,7 +125,7 @@ public class ColaActionFilter(IColaLog colaLog) : IActionFilter
         sb.AppendLine($"完成请求[{method}]/{controllerName}/{actionName}，结果：");
         if (result != null)
         {
-            sb.AppendLine("    " + Newtonsoft.Json.JsonConvert.SerializeObject(result));
+            sb.AppendLine("    " + JsonConvert.SerializeObject(result));
         }
         else
         {

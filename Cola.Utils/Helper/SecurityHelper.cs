@@ -19,11 +19,11 @@ public class SecurityHelper
         byte[]? keyBytes = null;
         byte[]? aiBytes = null;
         if (key != null && !key.IsNullOrEmpty() && key.Length != 32)
-            throw new ColaException(EnumException.Util000004);
+            throw new ColaException(EnumException.Secure000004);
         if (!aesAi.IsNullOrEmpty() && key.IsNullOrEmpty())
-            throw new ColaException(EnumException.Util000002);
+            throw new ColaException(EnumException.Secure000002);
         if (aesAi != null && !aesAi.IsNormalized() && aesAi.Length != 16)
-            throw new ColaException(EnumException.Util000005);
+            throw new ColaException(EnumException.Secure000005);
         if (!key.IsNullOrEmpty())
             keyBytes = Encoding.UTF8.GetBytes(key?.Substring(0, 32) ?? string.Empty);
         if (!aesAi.IsNullOrEmpty())
@@ -58,11 +58,11 @@ public class SecurityHelper
         byte[]? keyBytes = null;
         byte[]? aiBytes = null;
         if (key != null && !key.IsNullOrEmpty() && key.Length != 32)
-            throw new ColaException(EnumException.Util000004);
+            throw new ColaException(EnumException.Secure000004);
         if (!aesAi.IsNullOrEmpty() && key.IsNullOrEmpty())
-            throw new ColaException(EnumException.Util000005);
+            throw new ColaException(EnumException.Secure000005);
         if (aesAi != null && !aesAi.IsNormalized() && aesAi.Length != 16)
-            throw new ColaException(EnumException.Util000006);
+            throw new ColaException(EnumException.Secure000006);
         if (!key.IsNullOrEmpty())
             keyBytes = Encoding.UTF8.GetBytes(key?.Substring(0, 32) ?? string.Empty);
         if (!aesAi.IsNullOrEmpty())

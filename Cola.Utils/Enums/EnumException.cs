@@ -62,27 +62,27 @@ public class EnumException(string id, string description) : Enumeration<string>(
     /// <summary>
     /// 找不到RSA key
     /// </summary>
-    public static readonly EnumException Util000001 = new EnumException("2x000001","找不到 RSA key");
+    public static readonly EnumException Secure000001 = new EnumException("2x000001","找不到 RSA key");
     /// <summary>
     /// RsaEncrypt 公钥不正确
     /// </summary>
-    public static readonly EnumException Util000002 = new EnumException("2x000002","RsaEncrypt 公钥不正确");
+    public static readonly EnumException Secure000002 = new EnumException("2x000002","RsaEncrypt 公钥不正确");
     /// <summary>
     /// RsaDecrypt 私钥不正确
     /// </summary>
-    public static readonly EnumException Util000003 = new EnumException("2x000003","RsaDecrypt 私钥不正确");
+    public static readonly EnumException Secure000003 = new EnumException("2x000003","RsaDecrypt 私钥不正确");
     /// <summary>
     /// key 需要 32 位长度
     /// </summary>
-    public static readonly EnumException Util000004 = new EnumException("2x000004","key 需要 32 位长度");
+    public static readonly EnumException Secure000004 = new EnumException("2x000004","key 需要 32 位长度");
     /// <summary>
     /// 如要使用 aes_ai 偏移量参数，必须要有加密盐值参数 key
     /// </summary>
-    public static readonly EnumException Util000005 = new EnumException("2x000005","如要使用 aes_ai 偏移量参数，必须要有加密盐值参数 key");
+    public static readonly EnumException Secure000005 = new EnumException("2x000005","如要使用 aes_ai 偏移量参数，必须要有加密盐值参数 key");
     /// <summary>
     /// aes_ai 需要 16 位长度
     /// </summary>
-    public static readonly EnumException Util000006 = new EnumException("2x000006","aes_ai 需要 16 位长度");
+    public static readonly EnumException Secure000006 = new EnumException("2x000006","aes_ai 需要 16 位长度");
     
     #endregion
 

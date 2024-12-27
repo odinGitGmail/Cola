@@ -23,7 +23,7 @@ public class TenantContext : ITenantContext
     private static readonly ConcurrentDictionary<int, SqlSugarClient> DbClients = new();
     private readonly IColaException _colaException;
     private readonly IColaConsole _colaConsole;
-    private readonly ColaEfConfigOption? _efConfig;
+    private readonly ColaOrmConfigOption? _efConfig;
 
     private TenantContext(ITenantResolutionStrategy tenantResolutionStrategy,
         IConfiguration configuration,
@@ -35,7 +35,7 @@ public class TenantContext : ITenantContext
         List<GlobalQueryFilter>? globalQueryFilters)
     {
         _tenantResolutionStrategy = tenantResolutionStrategy;
-        _efConfig = configuration.GetSection(SystemConstant.CONSTANT_COLAORM_SECTION).Get<ColaEfConfigOption>();
+        _efConfig = configuration.GetSection(SystemConstant.CONSTANT_COLAORM_SECTION).Get<ColaOrmConfigOption>();
         _colaCache = colaCache;
         _colaException = colaException;
         _colaConsole = colaConsole;

@@ -2,6 +2,7 @@
 using Cola.Console;
 using Cola.Exception;
 using Cola.Log;
+using Cola.SnowFlake;
 using Cola.Swagger;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -21,8 +22,11 @@ public static class InjectBaseColaCore
     {
         // 注入控制台扩展
         services
+            .AddHttpContextAccessor()
             // 控制台扩展组件
             .AddSingletonColaConsole()
+            // SnowFlake组件
+            .AddSingletonSnowFlake(configurationManager)
             // 日志组件
             .AddSingletonColaLogs(configurationManager)
             // 异常处理组件

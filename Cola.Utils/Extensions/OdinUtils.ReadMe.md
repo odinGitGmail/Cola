@@ -435,6 +435,16 @@ public static TDestination Adapter<TSource, TDestination>(
 )
 ```
 
+#### 14 表达式树封装
+
+```csharp
+Expression<Func<LabourDBInfo, bool>> whereExpression = t => t.Status == 1;
+whereExpression = whereExpression.MergeAnd(t => t.ChildrenDir == "原始库");
+whereExpression = whereExpression.MergeAnd(t => t.DBType == "GR");
+var dbs = this
+    ._labourTempQueryService.QueryEntities<LabourDBInfo>(whereExpression)
+    .Result.OrderBy(d => d.DBCatalog);
+```
 
 
 

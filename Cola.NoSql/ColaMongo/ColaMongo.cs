@@ -42,7 +42,7 @@ public class ColaMongo : IColaMongo
     /// <returns>bool</returns>
     public bool ClearCollection<T>(string collName)
     {
-        this.DeleteMany(Builders<T>.Filter.Empty, collName);
+        DeleteMany(Builders<T>.Filter.Empty, collName);
         return true;
     }
 
@@ -140,7 +140,7 @@ public class ColaMongo : IColaMongo
         FilterDefinition<T> filter,
         string collName)
     {
-        var client = this._database.GetCollection<T>(collName);
+        var client = _database.GetCollection<T>(collName);
         return client.UpdateOne(filter, update);
     }
 
@@ -160,7 +160,7 @@ public class ColaMongo : IColaMongo
         FilterDefinition<T> filter,
         string collName)
     {
-        var client = this._database.GetCollection<T>(collName);
+        var client = _database.GetCollection<T>(collName);
         return await client.UpdateOneAsync(filter, update);
     }
 
@@ -310,7 +310,7 @@ public class ColaMongo : IColaMongo
         string collName,
         string[]? field = null)
     {
-        var result = await this.FindListAsync(filter, collName, field);
+        var result = await FindListAsync(filter, collName, field);
         return result.SingleOrDefault();
     }
 
@@ -332,7 +332,7 @@ public class ColaMongo : IColaMongo
         bool isObjectId = true,
         string[]? field = null)
     {
-        var client = this._database.GetCollection<T>(collName);
+        var client = _database.GetCollection<T>(collName);
         FilterDefinition<T> filter;
         filter = isObjectId ? Builders<T>.Filter.Eq("_id", new ObjectId(id)) : Builders<T>.Filter.Eq("_id", id);
 
@@ -370,7 +370,7 @@ public class ColaMongo : IColaMongo
         bool isObjectId = true,
         string[]? field = null)
     {
-        var client = this._database.GetCollection<T>(collName);
+        var client = _database.GetCollection<T>(collName);
         FilterDefinition<T> filter;
         filter = isObjectId ? Builders<T>.Filter.Eq("_id", new ObjectId(id)) : Builders<T>.Filter.Eq("_id", id);
 
@@ -408,7 +408,7 @@ public class ColaMongo : IColaMongo
     {
         if (string.IsNullOrEmpty(collName))
             return null;
-        var client = this._database.GetCollection<T>(collName);
+        var client = _database.GetCollection<T>(collName);
 
         // 不指定查询字段
         if (field == null || field.Length == 0)
@@ -446,7 +446,7 @@ public class ColaMongo : IColaMongo
         string[]? field = null,
         SortDefinition<T>? sort = null)
     {
-        var client = this._database.GetCollection<T>(collName);
+        var client = _database.GetCollection<T>(collName);
 
         // 不指定查询字段
         if (field == null || field.Length == 0)
@@ -498,7 +498,7 @@ public class ColaMongo : IColaMongo
         string[]? field = null,
         SortDefinition<T>? sort = null)
     {
-        var client = this._database.GetCollection<T>(collName);
+        var client = _database.GetCollection<T>(collName);
         count = client.CountDocuments(filter);
 
         // 不指定查询字段
@@ -571,7 +571,7 @@ public class ColaMongo : IColaMongo
         string[]? field = null,
         SortDefinition<T>? sort = null)
     {
-        var client = this._database.GetCollection<T>(collName);
+        var client = _database.GetCollection<T>(collName);
 
         // 不指定查询字段
         if (field == null || field.Length == 0)

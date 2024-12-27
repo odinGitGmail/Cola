@@ -5,7 +5,7 @@ namespace Cola.Utils.Helper;
 /// <summary>
 ///     ChineseCalendar
 /// </summary>
-public class ChineseCalendar
+public class ChineseCalendarHelper
 {
     #region 内部结构
 
@@ -289,7 +289,7 @@ public class ChineseCalendar
     ///     用一个标准的公历日期来初使化
     /// </summary>
     /// <param name="dt"></param>
-    public ChineseCalendar(DateTime dt)
+    public ChineseCalendarHelper(DateTime dt)
     {
         int i;
         CheckDateLimit(dt);
@@ -357,7 +357,7 @@ public class ChineseCalendar
     /// <param name="cm">农历月</param>
     /// <param name="cd">农历日</param>
     /// <param name="leapMonthFlag">闰月标志</param>
-    public ChineseCalendar(int cy, int cm, int cd, bool leapMonthFlag)
+    public ChineseCalendarHelper(int cy, int cm, int cd, bool leapMonthFlag)
     {
         int i;
         int temp;
@@ -1358,10 +1358,10 @@ public class ChineseCalendar
     ///     取下一天
     /// </summary>
     /// <returns></returns>
-    public ChineseCalendar NextDay()
+    public ChineseCalendarHelper NextDay()
     {
         var nextDay = _date.AddDays(1);
-        return new ChineseCalendar(nextDay);
+        return new ChineseCalendarHelper(nextDay);
     }
 
     #endregion
@@ -1372,10 +1372,10 @@ public class ChineseCalendar
     ///     取前一天
     /// </summary>
     /// <returns></returns>
-    public ChineseCalendar PervDay()
+    public ChineseCalendarHelper PervDay()
     {
         var pervDay = _date.AddDays(-1);
-        return new ChineseCalendar(pervDay);
+        return new ChineseCalendarHelper(pervDay);
     }
 
     #endregion

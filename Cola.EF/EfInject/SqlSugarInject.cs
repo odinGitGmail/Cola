@@ -18,54 +18,51 @@ public static class SqlSugarInject
     public static IServiceCollection AddSingletonColaSqlSugar(
         this IServiceCollection services,
         IConfiguration configuration,
-        IHttpContextAccessor httpContextAccessor,
-        Action<ColaEfConfigOption> action,
+        Action<ColaOrmConfigOption> action,
         List<GlobalQueryFilter>? tableFilter = null,
         List<AopOnLogExecutingModel>? aopOnLogExecutingModels = null,
         List<AopOnErrorModel>? aopOnErrorModels = null)
     {
-        var opts = new ColaEfConfigOption();
+        var opts = new ColaOrmConfigOption();
         action(opts);
         services.AddTransient<IColaUnitOfWork, ColaUnitOfWork>(); // 注册工作单元到容器
-        return InjectSqlSugar(services, opts, httpContextAccessor, configuration, tableFilter, aopOnLogExecutingModels, aopOnErrorModels);
+        return InjectSqlSugar(services, opts, configuration, tableFilter, aopOnLogExecutingModels, aopOnErrorModels);
     }
 
     public static IServiceCollection AddSingletonColaSqlSugar(
         this IServiceCollection services,
         IConfiguration configuration,
-        IHttpContextAccessor httpContextAccessor,
         List<GlobalQueryFilter>? tableFilter = null,
         List<AopOnLogExecutingModel>? aopOnLogExecutingModels = null,
         List<AopOnErrorModel>? aopOnErrorModels = null)
     {
-        var colaEfConfig = configuration.GetSection(SystemConstant.CONSTANT_COLAORM_SECTION).Get<ColaEfConfigOption>();
-        var opts = new ColaEfConfigOption
+        var colaEfConfig = configuration.GetSection(SystemConstant.CONSTANT_COLAORM_SECTION).Get<ColaOrmConfigOption>();
+        var opts = new ColaOrmConfigOption
         {
             TenantResolutionStrategy = colaEfConfig!.TenantResolutionStrategy,
             ColaOrmConfig = colaEfConfig.ColaOrmConfig
         };
         services.AddTransient<IColaUnitOfWork, ColaUnitOfWork>(); // 注册工作单元到容器
-        return InjectSqlSugar(services, opts, httpContextAccessor, configuration, tableFilter, aopOnLogExecutingModels, aopOnErrorModels);
+        return InjectSqlSugar(services, opts, configuration, tableFilter, aopOnLogExecutingModels, aopOnErrorModels);
     }
 
     private static IServiceCollection InjectSqlSugar(
         IServiceCollection services,
-        ColaEfConfigOption colaEfConfigOption,
-        IHttpContextAccessor httpContextAccessor,
+        ColaOrmConfigOption colaOrmConfigOption,
         IConfiguration configuration,
         List<GlobalQueryFilter>? tableFilter = null,
         List<AopOnLogExecutingModel>? aopOnLogExecutingModels = null,
         List<AopOnErrorModel>? aopOnErrorModels = null)
     {
         // 配置参数验证
-        ValidateColaEfConfigOption(services, colaEfConfigOption);
+        ValidateColaEfConfigOption(services, colaOrmConfigOption);
         services.AddSingleton<ITenantResolutionStrategy, DomainTenantResolutionStrategy>();
         services.AddSingleton<ITenantContext>(sp => TenantContext.Create(sp,configuration,aopOnLogExecutingModels,aopOnErrorModels,tableFilter));
         
         var sqlSugarConfigLst = new List<ConnectionConfig>();
-        for (var i = 0; i < colaEfConfigOption.ColaOrmConfig!.Count; i++)
+        for (var i = 0; i < colaOrmConfigOption.ColaOrmConfig!.Count; i++)
         {
-            var opt = colaEfConfigOption.ColaOrmConfig[i];
+            var opt = colaOrmConfigOption.ColaOrmConfig[i];
             sqlSugarConfigLst.Add(new ConnectionConfig
             {
                 ConfigId = opt.ConfigId,
@@ -79,14 +76,15 @@ public static class SqlSugarInject
 
         ValidateSqlSugarConfigLst(services, sqlSugarConfigLst);
 
-        ValidateAopOnLogExecuting(services, sqlSugarConfigLst, colaEfConfigOption, aopOnLogExecutingModels);
+        ValidateAopOnLogExecuting(services, sqlSugarConfigLst, colaOrmConfigOption, aopOnLogExecutingModels);
 
-        ValidateAopOnError(services, sqlSugarConfigLst, colaEfConfigOption, aopOnErrorModels);
+        ValidateAopOnError(services, sqlSugarConfigLst, colaOrmConfigOption, aopOnErrorModels);
 
         #endregion
+        
         var colaConsole = services.BuildServiceProvider().GetService<IColaConsole>();
         
-        InjectTenantResolutionStrategy(services, httpContextAccessor, configuration, colaEfConfigOption);
+        InjectTenantResolutionStrategy(services, configuration, colaOrmConfigOption);
         if (sqlSugarConfigLst.Count > 0)
         {
             services.AddSingleton<ISqlSugarRepository>(SqlSugarRepository.Create);
@@ -95,30 +93,36 @@ public static class SqlSugarInject
         }
         else
         {
-            colaConsole!.WriteLine("SqlSugar配置不正确，无法类型【 ISqlSugarRepository, SqlSugarRepository 】", backgroundColor: ConsoleColor.DarkRed);
+            colaConsole!.WriteLine("SqlSugar配置不正确，无类型【 ISqlSugarRepository, SqlSugarRepository 】", backgroundColor: ConsoleColor.DarkRed);
         }
 
         return services;
     }
 
-    private static void InjectTenantResolutionStrategy(IServiceCollection services, IHttpContextAccessor httpContextAccessor, IConfiguration configuration, ColaEfConfigOption colaEfConfigOption)
+    private static void InjectTenantResolutionStrategy(IServiceCollection services, IConfiguration configuration, ColaOrmConfigOption colaOrmConfigOption)
     {
+        var httpContextAccessor = services.BuildServiceProvider().GetService<IHttpContextAccessor>();
+        var colaConsole = services.BuildServiceProvider().GetService<IColaConsole>();
+        if (httpContextAccessor == null)
+        {
+            colaConsole!.WriteLine("SqlSugar配置不正确，无类型【 IHttpContextAccessor, httpContextAccessor 】", backgroundColor: ConsoleColor.DarkRed);
+        }
         Dictionary<string, ITenantResolutionStrategy> dicTenantResolutionStrategys =
             new Dictionary<string, ITenantResolutionStrategy>()
             {
-                { "DomainTenant",new DomainTenantResolutionStrategy(httpContextAccessor, configuration, services.BuildServiceProvider()) },
-                { "HttpHeaderTenant",new HttpHeaderTenantResolutionStrategy(httpContextAccessor) },
-                { "RouteValueTenant",new RouteValueTenantResolutionStrategy(httpContextAccessor) },
+                { "DomainTenant",new DomainTenantResolutionStrategy(httpContextAccessor!, configuration, services.BuildServiceProvider()) },
+                { "HttpHeaderTenant",new HttpHeaderTenantResolutionStrategy(httpContextAccessor!) },
+                { "RouteValueTenant",new RouteValueTenantResolutionStrategy(httpContextAccessor!) },
                 { "NoTenant",new NoTenantResolutionStrategy() }
             };
-        var tenantResolutionStrategys = dicTenantResolutionStrategys[colaEfConfigOption.TenantResolutionStrategy];
+        var tenantResolutionStrategys = dicTenantResolutionStrategys[colaOrmConfigOption.TenantResolutionStrategy];
         services.AddSingleton(tenantResolutionStrategys);
     }
     
     #region 检查参数方法
 
     private static void ValidateAopOnLogExecuting(IServiceCollection services, List<ConnectionConfig> sqlSugarConfigLst,
-        ColaEfConfigOption opts, List<AopOnLogExecutingModel>? aopOnLogExecutingModels = null)
+        ColaOrmConfigOption opts, List<AopOnLogExecutingModel>? aopOnLogExecutingModels = null)
     {
         var exceptionHelper = services.BuildServiceProvider().GetService<IColaException>();
         if (aopOnLogExecutingModels != null)
@@ -134,7 +138,7 @@ public static class SqlSugarInject
         }
     }
 
-    private static void ValidateColaEfConfigOption(IServiceCollection services, ColaEfConfigOption option)
+    private static void ValidateColaEfConfigOption(IServiceCollection services, ColaOrmConfigOption option)
     {
         var exceptionHelper = services.BuildServiceProvider().GetService<IColaException>();
         if (option.ColaOrmConfig == null || option.ColaOrmConfig.Count == 0)
@@ -142,7 +146,7 @@ public static class SqlSugarInject
     }
 
     private static void ValidateAopOnError(IServiceCollection services, List<ConnectionConfig> sqlSugarConfigLst,
-        ColaEfConfigOption opts, List<AopOnErrorModel>? aopOnErrorModels = null)
+        ColaOrmConfigOption opts, List<AopOnErrorModel>? aopOnErrorModels = null)
     {
         var exceptionHelper = services.BuildServiceProvider().GetService<IColaException>();
         if (aopOnErrorModels != null)

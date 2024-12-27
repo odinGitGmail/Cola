@@ -7,6 +7,8 @@
 ```json 配置文件
 {
   "ColaOrm": {
+    // TenantType 多租户模式 ConfigId 或者  WithAttr
+    "TenantType":"ConfigId",
     "TenantResolutionStrategy": "NoTenant",
     "ColaOrmConfig": [
       {

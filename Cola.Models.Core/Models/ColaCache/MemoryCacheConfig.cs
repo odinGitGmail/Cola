@@ -24,7 +24,7 @@ public class MemoryCacheConfig
     {
         get
         {
-            return this.memoryCacheTypeEnum.ToString();
+            return memoryCacheTypeEnum.ToString();
         }
         set
         {
