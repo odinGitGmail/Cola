@@ -27,17 +27,17 @@ public class ReplaceVersionWithExactValueInPath : IDocumentFilter
                 var action = arr[^1];
 
                 var version = "v" + methods
-                    .FirstOrDefault(x => x.Name == action &&
+                    .FirstOrDefault(x =>
                                          x.IsPublic &&
                                          x.GetCustomAttribute<ApiVersionAttribute>() != null)
                     .GetCustomAttribute<ApiVersionAttribute>()?.Versions
                     .FirstOrDefault();
-                var settedAction = methods
-                    .FirstOrDefault(x => x.Name == action &&
+                var sa = methods
+                    .FirstOrDefault(x => 
                                          x.IsPublic &&
                                          x.GetCustomAttribute<ApiVersionAttribute>() != null)
-                    .GetCustomAttribute<ActionNameAttribute>()?.Name;
-                action = settedAction ?? action;
+                    .GetCustomAttribute<ActionNameAttribute>();
+                action = sa != null ? sa.Name : action;
 
                 if (swaggerDoc.Info.Version == version)
                 {

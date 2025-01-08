@@ -16,35 +16,17 @@ public static class ColaOrmInject
     public static IServiceCollection AddColaOrm(
         this IServiceCollection services,
         IConfiguration configuration,
-        Action<ColaOrmConfigOption> action,
-        List<GlobalQueryFilter>? tableFilter = null,
         Action<string, SugarParameter[]>? handlerLogExecuting=null,
         Action<SqlSugarException>? handlerSqlSugarException=null)
     {
-        var colaEfConfig = configuration.GetSection(SystemConstant.CONSTANT_COLAORM_SECTION).Get<ColaOrmConfigOption>();
-        var opts = new ColaOrmConfigOption
-        {
-            TenantType = colaEfConfig!.TenantType,
-            TenantResolutionStrategy = colaEfConfig!.TenantResolutionStrategy,
-            ColaOrmConfig = colaEfConfig.ColaOrmConfig
-        };
-        return InjectSqlSugar(services, opts, tableFilter, handlerLogExecuting, handlerSqlSugarException);
-    }
-    
-    private static IServiceCollection InjectSqlSugar(
-        IServiceCollection services,
-        ColaOrmConfigOption colaOrmConfigOption,
-        List<GlobalQueryFilter>? tableFilter = null,
-        Action<string, SugarParameter[]>? handlerLogExecuting=null,
-        Action<SqlSugarException>? handlerSqlSugarException=null)
-    {
+        var colaOrmConfigOption = configuration.GetSection(SystemConstant.CONSTANT_COLAORM_SECTION).Get<ColaOrmConfigOption>();
         // 配置参数验证
-        ValidateColaEfConfigOption(services, colaOrmConfigOption);
+        ValidateColaEfConfigOption(services, colaOrmConfigOption!);
         
         var sqlSugarConfigLst = new List<ConnectionConfig>();
         var colaConsole = services.BuildServiceProvider().GetService<IColaConsole>();
         
-        for (var i = 0; i < colaOrmConfigOption.ColaOrmConfig!.Count; i++)
+        for (var i = 0; i < colaOrmConfigOption!.ColaOrmConfig!.Count; i++)
         {
             var opt = colaOrmConfigOption.ColaOrmConfig[i];
             sqlSugarConfigLst.Add(new ConnectionConfig
