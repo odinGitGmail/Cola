@@ -25,4 +25,8 @@
       <ProjectReference Include="..\Cola.Utils\Cola.Utils.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Caching\" />
+    </ItemGroup>
+
 </Project>
