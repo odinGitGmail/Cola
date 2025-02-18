@@ -1,14 +1,11 @@
 using Cola.EF.Core.Interfaces;
 using Cola.EF.SqlSugar;
 using Cola.EF.SqlSugar.Context;
-using Cola.Models.Core.Models.ColaEF;
-using Cola.Utils.Constants;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Cola.EF.Web.Extensions;
+namespace Cola.EF;
 
-public static class ServiceCollectionExtensions
+public static class Inject
 {
     public static IServiceCollection AddColaEF(this IServiceCollection services)
     {

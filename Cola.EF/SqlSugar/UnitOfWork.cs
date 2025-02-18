@@ -1,3 +1,4 @@
+using System.Linq.Expressions;
 using Cola.EF.Core.Interfaces;
 using Cola.EF.SqlSugar.Repository;
 using Microsoft.EntityFrameworkCore;
@@ -6,46 +7,84 @@ using SqlSugar;
 
 namespace Cola.EF.SqlSugar;
 
-public class UnitOfWork:IUnitOfWork
+public class UnitOfWork : IUnitOfWork
 {
     private readonly IColaDbContextFactory _factory;
     private readonly string _configId;
-    private SqlSugarScope _db;
+    private readonly SqlSugarScope _db;
     private readonly Dictionary<Type, object> _repositories = new();
 
     public UnitOfWork(IColaDbContextFactory factory, string configId = "Default")
     {
         _factory = factory;
         _configId = configId;
-        _db = _factory.GetDbContext(_configId);
+        _db = factory.GetDbContext(configId);
         _db.BeginTran();
     }
-
-    public IColaBaseRepository<TEntity,TId> GetRepository<TEntity,TId>() where TEntity : IEntity<TId>
+    
+    public ISqlSugarClient DbContext => _db;
+    
+    public IColaBaseRepository<TEntity,TKey> GetRepository<TEntity,TKey>()  where TEntity : class, IEntity<TKey>
     {
         var type = typeof(TEntity);
         if (!_repositories.TryGetValue(type, out var repository))
         {
-            repository = new ColaBaseRepository<TEntity,TId>(_factory, _configId);
+            repository = new ColaBaseRepository<TEntity,TKey>(_factory, _configId);
             _repositories.Add(type, repository);
         }
-        return (IColaBaseRepository<TEntity,TId>)repository;
+        return (IColaBaseRepository<TEntity,TKey>)repository;
     }
 
-    public void Commit()
+    public Func<ISugarQueryable<TEntity>, ISugarQueryable<TEntity>> LeftJoin<TEntity, TJoinEntity>(
+        Expression<Func<TEntity,TJoinEntity,bool>> joinExpressio)
     {
-        try
-        {
-            _db.CommitTran();
-        }
-        catch
-        {
-            Rollback();
-            throw;
-        }
+        return queryable => queryable.LeftJoin(joinExpressio);
+    }
+    
+    public Func<ISugarQueryable<TEntity>, ISugarQueryable<TEntity>> RightJoin<TEntity, TJoinEntity>(
+        Expression<Func<TEntity,TJoinEntity,bool>> joinExpressio)
+    {
+        return queryable => queryable.RightJoin(joinExpressio);
+    }
+    
+    public Func<ISugarQueryable<TEntity>, ISugarQueryable<TEntity>> InnerJoin<TEntity, TJoinEntity>(
+        Expression<Func<TEntity,TJoinEntity,bool>> joinExpressio)
+    {
+        return queryable => queryable.InnerJoin(joinExpressio);
+    }
+    
+    public Expression<Func<TEntity, bool>> WhereExpression<TEntity>(Expression<Func<TEntity, bool>> condation)
+    {
+        return condation;
     }
 
-    public void Rollback()
+    public Expression<Func<TEntity, TResult>> SelectExpression<TEntity, TResult>(
+        Expression<Func<TEntity, TResult>> selectExpression)
+    {
+        return selectExpression;
+    }
+    
+    public Expression<Func<TEntity, TKey>> PrimaryKeyExpression<TEntity,TKey>(Expression<Func<TEntity, TKey>> condation)
+    {
+        return condation;
+    }
+    
+    public Expression<Func<TEntity, bool>> QueryPrimaryKeyExpression<TEntity>(Expression<Func<TEntity, bool>> condation)
+    {
+        return condation;
+    }
+
+    public void BeginTransaction()
+    {
+        _db.BeginTran();
+    }
+
+    public void CommitTransaction()
+    {
+        _db.CommitTran();
+    }
+
+    public void RollbackTransaction()
     {
         _db.RollbackTran();
     }

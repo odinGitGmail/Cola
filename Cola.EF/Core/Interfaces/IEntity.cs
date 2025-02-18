@@ -1,6 +1,6 @@
 namespace Cola.EF.Core.Interfaces;
 
-public interface IEntity<TId>
+public interface IEntity<TKey>
 {
-    public TId Id { get; set; }
+    TKey Id { get; set; }
 }

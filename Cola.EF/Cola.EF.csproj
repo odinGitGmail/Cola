@@ -27,6 +27,7 @@
 
     <ItemGroup>
       <Folder Include="Caching\" />
+      <Folder Include="Extensions\" />
     </ItemGroup>
 
 </Project>
