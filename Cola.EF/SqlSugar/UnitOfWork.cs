@@ -24,7 +24,7 @@ public class UnitOfWork : IUnitOfWork
     
     public ISqlSugarClient DbContext => _db;
     
-    public IColaBaseRepository<TEntity,TKey> GetRepository<TEntity,TKey>()  where TEntity : class, IEntity<TKey>
+    public IColaBaseRepository<TEntity,TKey> GetRepository<TEntity,TKey>() where TEntity : class, IEntity<TKey>, new()
     {
         var type = typeof(TEntity);
         if (!_repositories.TryGetValue(type, out var repository))

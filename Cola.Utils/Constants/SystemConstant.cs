@@ -108,7 +108,11 @@ public class SystemConstant
     public const string CONSTANT_COLAAUTH_Jwt_SECTION = $"{CONSTANT_COLAAUTH_SECTION}:Jwt";
     public const string CONSTANT_COLAAUTH_Jwt_VALIDISSUER_SECTION = $"{CONSTANT_COLAAUTH_Jwt_SECTION}:ValidIssuer";
     public const string CONSTANT_COLAAUTH_Jwt_AVALIDAUDIENCE_SECTION = $"{CONSTANT_COLAAUTH_Jwt_SECTION}:ValidAudience";
+    public const string CONSTANT_COLAAUTH_Jwt_ISSURE_SECTION = $"{CONSTANT_COLAAUTH_Jwt_SECTION}:Issuer";
+    public const string CONSTANT_COLAAUTH_Jwt_AUDIENCE_SECTION = $"{CONSTANT_COLAAUTH_Jwt_SECTION}:Audience";
     public const string CONSTANT_COLAAUTH_Jwt_EXPIRATION_SECTION = $"{CONSTANT_COLAAUTH_Jwt_SECTION}:Expiration";
+    public const string CONSTANT_COLAAUTH_Jwt_REFRESHEXPIRATION_SECTION = $"{CONSTANT_COLAAUTH_Jwt_SECTION}:RefreshExpiration";
+    
     #endregion
 
     #endregion

@@ -1,133 +1,76 @@
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
 using System.Text;
-using Cola.Models.Core.Enums.Jwt;
-using Cola.Models.Core.Models;
-using Cola.Models.Core.Models.ColaApiResult;
+using Cola.Console;
 using Cola.Utils.Constants;
-using Cola.Utils.Enums;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 using Newtonsoft.Json;
 
 namespace Cola.Authen.Jwt;
 
 public static class InjectColaJwt
 {
-    public static IServiceCollection AddColaJwt(this IServiceCollection services,
-        ConfigurationManager configurationManager)
+    public static IServiceCollection AddJwtSwagger(this IServiceCollection services)
     {
-        var authType = configurationManager.GetSection(SystemConstant.CONSTANT_COLAAUTH_AUTHTYPE_SECTION).Get<string>();
-        var secretKey = configurationManager.GetSection(SystemConstant.CONSTANT_COLAAUTH_SECRET_SECTION).Get<string>();
-        var validIssuer = configurationManager.GetSection(SystemConstant.CONSTANT_COLAAUTH_Jwt_VALIDISSUER_SECTION).Get<string>();
-        var validAudience = configurationManager.GetSection(SystemConstant.CONSTANT_COLAAUTH_Jwt_AVALIDAUDIENCE_SECTION).Get<string>();
-        SecurityKey securityKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(secretKey!));
-        if (authType == AuthEnumeration.Jwt.ToString())
+        var colaConsole = services.BuildServiceProvider().GetService<IColaConsole>();
+        services.AddSwaggerGen(c =>
         {
-            services.AddSingleton<IAuthenToken>(new AuthenToken(configurationManager));
-            services.AddAuthentication("Bearer") // 注入认证服务，认证类型：Bearer
-                .AddJwtBearer(o => // 注入 Jwt Bearer认证 服务，对其进行配置
+            // c.SwaggerDoc("v1", new OpenApiInfo { Title = "My API", Version = "v1" });
+            // 添加 JWT 认证支持
+            var securityScheme = new OpenApiSecurityScheme
+            {
+                Name = "JWT Authentication",
+                Description = "Enter JWT Bearer token **_only_**",
+                In = ParameterLocation.Header,
+                Type = SecuritySchemeType.Http,
+                Scheme = "bearer",
+                BearerFormat = "JWT",
+                Reference = new OpenApiReference
                 {
-                    // 对 jwt 进行配置
-                    o.TokenValidationParameters = new TokenValidationParameters() // 对Token的认证是哪些参数，这里设置
-                    {
-                        // 这里的参数遵循 3（必要） + 2（可选） 个参数的规则
-                        // 1、是否开启秘钥认证，验证秘钥
-                        ValidateIssuerSigningKey = true, // 验证发行者签名秘钥
-                        IssuerSigningKey = securityKey, // 发行者签名秘钥是？
-
-                        // 2、验证发行人
-                        ValidateIssuer = true, // 验证发行者
-                        ValidIssuer = validIssuer, // 验证发行者的名称是？
-
-                        // 3、验证订阅人
-                        ValidateAudience = true, // 是否验证订阅者
-                        ValidAudience = validAudience, // 验证订阅者的名称是？
-
-                        // 4、过期时间 和 生命周期
-                        RequireExpirationTime = true, // 使用过期时间
-                        ValidateLifetime = true, // 验证生命周期
-
-                    };
-
-                    o.Events = new JwtBearerEvents
-                    {
-                        //权限验证失败后执行
-                        OnChallenge = context =>
-                        {
-                            //终止默认的返回结果
-                            context.HandleResponse();
-                            string token = context.Request.Headers["Authorization"];
-                            var result = JsonConvert.SerializeObject(new ApiResultError()
-                                {
-                                    Code = EnumException.Tok000002.Id, 
-                                    Message = EnumException.Tok000002.ToString(),
-                                    StatusCode = EnumResponseStatusCode.Unauthorized.Id,
-                                });
-                            if (string.IsNullOrEmpty(token))
-                            {
-                                result = JsonConvert.SerializeObject(new ApiResultError()
-                                {
-                                    Code = EnumException.Tok000001.Id, 
-                                    Message = EnumException.Tok000001.ToString(),
-                                    StatusCode = EnumResponseStatusCode.Unauthorized.Id,
-                                });
-                                context.Response.ContentType = "application/json";
-                                context.Response.StatusCode = EnumResponseStatusCode.InternalServerError.Id;
-                                context.Response.WriteAsync(result);
-                                return Task.FromResult(result);
-                            }
-
-                            try
-                            {
-                                JwtSecurityTokenHandler tokenheader = new();
-                                ClaimsPrincipal claimsPrincipal = tokenheader.ValidateToken(token,
-                                    o.TokenValidationParameters, out SecurityToken securityToken);
-                            }
-                            catch (SecurityTokenExpiredException)
-                            {
-                                result = JsonConvert.SerializeObject(new ApiResultError()
-                                {
-                                    Code = EnumException.Tok000002.Id, 
-                                    Message = EnumException.Tok000002.ToString(),
-                                    StatusCode = EnumResponseStatusCode.Unauthorized.Id,
-                                });
-                                context.Response.ContentType = "application/json";
-                                context.Response.StatusCode = EnumResponseStatusCode.InternalServerError.Id;
-                                context.Response.WriteAsync(result);
-                                return Task.FromResult(result);
-                            }
-                            catch (Exception ex)
-                            {
-                                Console.WriteLine(ex);
-                                result = JsonConvert.SerializeObject(new ApiResultError()
-                                {
-                                    Code = EnumException.Tok000003.Id, 
-                                    Message = EnumException.Tok000003.ToString(),
-                                    StatusCode = EnumResponseStatusCode.Unauthorized.Id,
-                                });
-                                //验证失败返回401
-                                context.Response.StatusCode = EnumResponseStatusCode.InternalServerError.Id;
-                                context.Response.WriteAsync(result);
-                                return Task.FromResult(result);
-                            }
-
-                            context.Response.ContentType = "application/json";
-                            context.Response.StatusCode = EnumResponseStatusCode.InternalServerError.Id;
-                            context.Response.WriteAsync(result);
-                            return Task.FromResult(result);
-                        }
-                    };
-                });
-        }
-        else
-        {
-            // id4
-        }
-        
+                    Id = JwtBearerDefaults.AuthenticationScheme,
+                    Type = ReferenceType.SecurityScheme
+                }
+            };
+            c.AddSecurityDefinition(securityScheme.Reference.Id, securityScheme);
+            c.AddSecurityRequirement(new OpenApiSecurityRequirement
+            {
+                { securityScheme, Array.Empty<string>() }
+            });
+        });
+        colaConsole!.WriteInfo("注入【 SwaggerGen 】");
         return services;
+    }
+    public static IServiceCollection AddColaJwt(this IServiceCollection services)
+    {
+        var config = services.BuildServiceProvider().GetService<IConfiguration>();
+        var tokenParam = new TokenParameter(config);
+        var colaConsole = services.BuildServiceProvider().GetService<IColaConsole>();
+        services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+            .AddJwtBearer(options =>
+            {
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    ValidateLifetime = true,
+                    ValidateIssuerSigningKey = true,
+                    ValidIssuer = tokenParam.GetIssuer(),
+                    ValidAudience = tokenParam.GetAudience(),
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(tokenParam.GetSecret()))
+                };
+            });
+        colaConsole!.WriteInfo("注入【 Jwt Authentication 】");
+        // 添加授权服务
+        services.AddAuthorization();
+        services.AddSingleton<IAuthenToken, AuthenToken>();
+        colaConsole!.WriteInfo("注入【 IAuthenToken, AuthenToken 】");
+        return services;
+        
     }
 }

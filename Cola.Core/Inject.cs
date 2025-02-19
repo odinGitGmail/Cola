@@ -3,13 +3,12 @@ using Cola.Console;
 using Cola.Exception;
 using Cola.Log;
 using Cola.SnowFlake;
-using Cola.Swagger;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Cola.Core;
 
-public static class InjectBaseColaCore
+public static class Inject
 {
     /// <summary>
     /// AddColaCore - 基础组件注入. 需要配置 colaLog swagger jwt 
@@ -17,8 +16,7 @@ public static class InjectBaseColaCore
     /// <param name="services">services.</param>
     /// <param name="configurationManager">configurationManager.</param>
     /// <returns></returns>
-    public static IServiceCollection AddColaCore(this IServiceCollection services,
-        ConfigurationManager configurationManager)
+    public static IServiceCollection AddColaCore(this IServiceCollection services)
     {
         // 注入控制台扩展
         services
@@ -26,9 +24,9 @@ public static class InjectBaseColaCore
             // 控制台扩展组件
             .AddSingletonColaConsole()
             // SnowFlake组件
-            .AddSingletonSnowFlake(configurationManager)
+            .AddSingletonSnowFlake()
             // 日志组件
-            .AddSingletonColaLogs(configurationManager)
+            .AddSingletonColaLogs()
             // 异常处理组件
             .AddColaExceptionSingleton();
 
@@ -44,10 +42,6 @@ public static class InjectBaseColaCore
     public static IServiceCollection AddColaSwaggerAndJwt(this IServiceCollection services,
         ConfigurationManager configurationManager)
     {
-        services
-            .AddColaSwagger(configurationManager)
-            .AddColaJwt(configurationManager);
-
         return services;
     }
 }

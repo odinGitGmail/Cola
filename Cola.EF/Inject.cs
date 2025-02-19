@@ -1,3 +1,4 @@
+using Cola.Console;
 using Cola.EF.Core.Interfaces;
 using Cola.EF.SqlSugar;
 using Cola.EF.SqlSugar.Context;
@@ -9,17 +10,12 @@ public static class Inject
 {
     public static IServiceCollection AddColaEF(this IServiceCollection services)
     {
+        var colaConsole = services.BuildServiceProvider().GetService<IColaConsole>();
         // 注册核心服务
         services.AddSingleton<IColaDbContextFactory, ColaDbContextFactory>();
+        colaConsole!.WriteInfo("注入类型【 IColaDbContextFactory, ColaDbContextFactory 】");
         services.AddScoped<IUnitOfWork, UnitOfWork>();
-        
-        // 多租户支持
-        // services.AddScoped<ITenantProvider, HttpContextTenantProvider>();
-        // services.AddScoped(typeof(IRepository<>), typeof(TenantRepository<>));
-        
-        // 缓存装饰器
-        // services.AddMemoryCache();
-        // services.Decorate(typeof(IRepository<>), typeof(CachedRepository<>));
+        colaConsole!.WriteInfo("注入类型【 IUnitOfWork, UnitOfWork 】");
         
         return services;
     }

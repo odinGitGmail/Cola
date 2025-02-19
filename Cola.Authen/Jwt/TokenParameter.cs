@@ -3,7 +3,7 @@ using Microsoft.Extensions.Configuration;
 
 namespace Cola.Authen.Jwt;
 
-public class TokenParameter(IConfigurationManager configurationManager)
+public class TokenParameter(IConfiguration configurationManager)
 {
     public string GetIssuer()
     {
@@ -31,6 +31,13 @@ public class TokenParameter(IConfigurationManager configurationManager)
     {
         return configurationManager
             .GetSection(SystemConstant.CONSTANT_COLAAUTH_Jwt_EXPIRATION_SECTION)
+            .Get<int>();
+    }
+    
+    public int GetRefreshExpiration()
+    {
+        return configurationManager
+            .GetSection(SystemConstant.CONSTANT_COLAAUTH_Jwt_REFRESHEXPIRATION_SECTION)
             .Get<int>();
     }
 }

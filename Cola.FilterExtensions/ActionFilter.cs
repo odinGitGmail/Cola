@@ -50,24 +50,6 @@ public class ColaActionFilter(IColaLog colaLog) : IActionFilter
         }
         else
         {
-            ObjectResult rst = context.Result as ObjectResult;
-            object? rstValue = rst != null ? rst.Value : null;
-            if (rstValue.GetType().Name != typeof(ApiResult<>).Name)
-            {
-                if (context.Exception != null)
-                {
-                    // 异常处理
-                    context.ExceptionHandled = true;
-                    // 如果是用户异常
-                    context.HttpContext.Response.StatusCode = EnumResponseStatusCode.InternalServerError.Id;
-                    context.Result = new ObjectResult(new ApiResultError { Message = context.Exception.Message });
-                }
-                else
-                {
-                    // 无异常
-                    context.Result = new ObjectResult(new ApiResult<object?> { Data = rstValue, });
-                }
-            }
             // 记录请求结果日志
             ControllerActionDescriptor desc = context.ActionDescriptor as ControllerActionDescriptor;
             if (desc != null)
@@ -76,13 +58,10 @@ public class ColaActionFilter(IColaLog colaLog) : IActionFilter
                     context.HttpContext.Request.Method,
                     desc.ControllerName,
                     desc.ActionName,
-                    rstValue);
+                    context.Result);
                 colaLog.Info(logText);
             }
         }
-        
-
-        
     }
     
     /// <summary>

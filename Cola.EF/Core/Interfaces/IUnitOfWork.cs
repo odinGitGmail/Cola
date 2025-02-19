@@ -6,7 +6,7 @@ namespace Cola.EF.Core.Interfaces;
 public interface IUnitOfWork : IDisposable
 {
     ISqlSugarClient DbContext { get; }
-    IColaBaseRepository<TEntity, TKey> GetRepository<TEntity, TKey>() where TEntity : class, IEntity<TKey>;
+    IColaBaseRepository<TEntity, TKey> GetRepository<TEntity, TKey>() where TEntity : class, IEntity<TKey>, new();
 
     Func<ISugarQueryable<TEntity>, ISugarQueryable<TEntity>> LeftJoin<TEntity, TJoinEntity>(
         Expression<Func<TEntity, TJoinEntity, bool>> joinExpressio);

@@ -2,7 +2,7 @@
 using Microsoft.Extensions.DependencyInjection;
 namespace Cola.Exception;
 
-public static class ColaExceptionInject
+public static class Inject
 {
     public static IServiceCollection AddColaExceptionSingleton(this IServiceCollection services)
     {

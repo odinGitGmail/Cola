@@ -4,5 +4,5 @@ namespace Cola.Authen;
 
 public interface IAuthenToken
 {
-    string GenerateToekn(Dictionary<string,string> userClaims);
+    string GenerateToken(Dictionary<string,string> userClaims);
 }

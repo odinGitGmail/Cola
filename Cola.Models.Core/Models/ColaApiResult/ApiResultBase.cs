@@ -1,6 +1,8 @@
 using System.Text.Json.Serialization;
+using System.Threading.Tasks;
 using Cola.Models.Core.Models.ColaAuthen;
 using Cola.Utils.Enums;
+using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 
 namespace Cola.Models.Core.Models.ColaApiResult;
@@ -11,7 +13,7 @@ public class ApiResultBase : IApiResult
     /// Message.
     /// </summary>
     [JsonProperty("message")]
-    public string Message { get; set; }
+    public string? Message { get; set; }
     /// <summary>
     /// Code.
     /// </summary>
@@ -26,6 +28,11 @@ public class ApiResultBase : IApiResult
     /// Token.
     /// </summary>
     [JsonProperty("token")]
-    public TokenModel? Token { get; set; }
-    
+    public string? Token { get; set; }
+    /// <summary>
+    /// Token.
+    /// </summary>
+    [JsonProperty("refreshToken")]
+    public string? RefreshToken { get; set; }
+
 }

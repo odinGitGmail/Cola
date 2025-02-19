@@ -124,6 +124,4 @@ public class ColaHybridCache : IColaHybridCache
     {
         ColaRedisCache.Unsubscribe(channel);
     }
-
-
 }

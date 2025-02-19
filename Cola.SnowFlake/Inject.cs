@@ -6,7 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Cola.SnowFlake;
 
-public static class SnowFlakeInject
+public static class Inject
 {
     /// <summary>
     ///     inject SnowFlake
@@ -31,8 +31,9 @@ public static class SnowFlakeInject
     /// <param name="services">IServiceCollection</param>
     /// <param name="config">config</param>
     /// <returns>IServiceCollection</returns>
-    public static IServiceCollection AddSingletonSnowFlake(this IServiceCollection services, IConfiguration config)
+    public static IServiceCollection AddSingletonSnowFlake(this IServiceCollection services)
     {
+        var config = services.BuildServiceProvider().GetService<IConfiguration>();
         var snowFlakeConfig = config.GetSection(SystemConstant.CONSTANT_COLASNOWFLAKE_SECTION).Get<SnowFlakeConfig>();
         services.AddSingleton<IColaSnowFlake>(new ColaSnowFlake(snowFlakeConfig!.DatacenterId,
             snowFlakeConfig.WorkerId));

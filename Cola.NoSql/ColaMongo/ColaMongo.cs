@@ -1,4 +1,5 @@
 using Cola.Models.Core.Models.ColaMongo;
+using Cola.Utils.Constants;
 using Microsoft.Extensions.Configuration;
 using MongoDB.Bson;
 using MongoDB.Driver;
@@ -7,14 +8,18 @@ namespace Cola.NoSql.ColaMongo;
 
 public class ColaMongo : IColaMongo
 {
+    private readonly IConfiguration _configuration;
+    private readonly MongoDbConfig? mongoDbConfig;
     private readonly IMongoDatabase _database;
 
     /// <summary>
     /// MongoHelper
     /// </summary>
-    /// <param name="mongoDbConfig">mongoDbConfig.</param>
-    public ColaMongo(MongoDbConfig mongoDbConfig)
+    /// <param name="IConfiguration">IConfiguration.</param>
+    public ColaMongo(IConfiguration configuration)
     {
+        this._configuration = configuration;
+        this.mongoDbConfig = configuration.GetSection(SystemConstant.CONSTANT_COLANOSQL_MONGO_SECTION).Get<MongoDbConfig>();
         // 决定使用哪个库
         _database = new MongoClient(mongoDbConfig.ConnName).GetDatabase(mongoDbConfig.DatabaseName);
     }

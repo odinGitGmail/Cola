@@ -9,13 +9,13 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Cola.Cache;
 
-public static class ColaRedisInject
+public static class Inject
 {
     public static IServiceCollection AddSingletonColaCache(
-        this IServiceCollection services,
-        IConfiguration config)
+        this IServiceCollection services)
     {
-        var cacheConfig = config.GetSection(SystemConstant.CONSTANT_COLACACHE_SECTION).Get<CacheConfigOption>();
+        var config = services.BuildServiceProvider().GetService<IConfiguration>();
+        var cacheConfig = config!.GetSection(SystemConstant.CONSTANT_COLACACHE_SECTION).Get<CacheConfigOption>();
         return InjectCache(services, cacheConfig!);
     }
 

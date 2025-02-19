@@ -4,7 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Cola.WebApi;
 
-public static class WebApiInject
+public static class Inject
 {
     /// <summary>
     ///     inject SnowFlake
